@@ -1,0 +1,44 @@
+<?php
+// Kết nối với cơ sở dữ liệu (thay đổi thông tin kết nối phù hợp)
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "event_manaager";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Kiểm tra kết nối
+if ($conn->connect_error) {
+    die("Kết nối thất bại: " . $conn->connect_error);
+}
+
+// Lấy ID sự kiện từ URL
+$eventId = isset($_GET['id']) ? $_GET['id'] : 0;
+
+// Truy vấn thông tin sự kiện
+$sql = "SELECT * FROM events WHERE id = $eventId";
+$result = $conn->query($sql);
+$event = $result->fetch_assoc();
+
+$conn->close();
+?>
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo $event['name']; ?></title>
+</head>
+<body>
+    <?php if ($event): ?>
+        <h1><?php echo $event['name']; ?></h1>
+        <img src="<?php echo $event['image_url']; ?>" alt="<?php echo $event['name']; ?>" />
+        <p><?php echo $event['description']; ?></p>
+        <p>Thời gian: <?php echo $event['time']; ?></p>
+
+    <?php else: ?>
+        <p>Sự kiện không tồn tại.</p>
+    <?php endif; ?>
+</body>
+</html>
